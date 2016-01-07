@@ -81,21 +81,23 @@ object ForumThread {
 
   implicit object forumThreadSerializer extends Table[ForumThread](ForumThread.tableName) {
 
-    import cats.syntax.monoidal._
+    import shapeless._
 
     private val fmt = ISODateTimeFormat.dateTime
 
-    override def * : Column[ForumThread] = {
-      Column[String]("ForumName", PrimaryKey) |@|
-        Column[String]("Subject", RangeKey) |@|
-        Column[String]("Message") |@|
-        Column[String]("LastPostedBy") |@|
-        Column[DateTime]("LastPostedDateTime")(Encoder[String].contramap { d: DateTime => fmt.print(d) }, Decoder[String].map(fmt.parseDateTime)) |@|
-        Column[Long]("Views") |@|
-        Column[Long]("Replies") |@|
-        Column[Long]("Answered") |@|
-        Column[Set[String]]("Tags")
-    }.imap(ForumThread.apply)(unlift(ForumThread.unapply))
+    override val * = {
+      (
+        PrimaryKey[String]("ForumName") ::
+          RangeKey[String]("Subject") ::
+          Key[String]("Message") ::
+          Key[String]("LastPostedBy") ::
+          Key[DateTime]("LastPostedDateTime")(Encoder[String].contramap { d: DateTime => fmt.print(d) }, Decoder[String].map(fmt.parseDateTime)) ::
+          Key[Long]("Views") ::
+          Key[Long]("Replies") ::
+          Key[Long]("Answered") ::
+          Key[Set[String]]("Tags") :: HNil
+        ).as[ForumThread]
+    }
   }
 
 }

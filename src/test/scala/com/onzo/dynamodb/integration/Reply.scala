@@ -22,6 +22,7 @@ import com.github.dwhjames.awswrap.dynamodb._
 import com.onzo.dynamodb._
 import org.joda.time.DateTime
 import org.joda.time.format.ISODateTimeFormat
+import shapeless.HNil
 
 
 case class Reply(
@@ -71,16 +72,14 @@ object Reply {
 
   implicit object replySerializer extends Table[Reply](Reply.tableName) {
 
-    import cats.syntax.monoidal._
-
     private val fmt = ISODateTimeFormat.dateTime
 
-    override def * : Column[Reply] = {
-      Column[String]("Id", PrimaryKey) |@|
-        Column[DateTime]("ReplyDateTime", RangeKey)(Encoder[String].contramap { d: DateTime => fmt.print(d) }, Decoder[String].map(fmt.parseDateTime)) |@|
-        Column[String]("Message") |@|
-        Column[String]("PostedBy")
-    }.imap(Reply.apply)(unlift(Reply.unapply))
+    override val * = {
+      PrimaryKey[String]("Id") ::
+        RangeKey[DateTime]("ReplyDateTime")(Encoder[String].contramap { d: DateTime => fmt.print(d) }, Decoder[String].map(fmt.parseDateTime)) ::
+        Key[String]("Message") ::
+        Key[String]("PostedBy") :: HNil
+    }.as[Reply]
   }
 
 }

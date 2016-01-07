@@ -22,6 +22,7 @@ import com.amazonaws.services.dynamodbv2.model._
 import com.onzo.dynamodb._
 import org.joda.time.DateTime
 import org.joda.time.format.ISODateTimeFormat
+import shapeless.HNil
 
 case class GameScore(
                       userId: String,
@@ -79,20 +80,18 @@ object GameScore {
 
   implicit object sameScoreSerializer extends Table[GameScore](GameScore.tableName) {
 
-    import cats.syntax.monoidal._
-
     private val fmt = ISODateTimeFormat.dateTime
 
-    def * : Column[GameScore] = {
-      Column[String]("UserId", PrimaryKey) |@|
-        Column[String]("GameTitle", RangeKey) |@|
-        Column[Long]("TopScore") |@|
-        Column[DateTime]("TopScoreDateTime")(Encoder[String].contramap { d: DateTime => fmt.print(d) }, Decoder[String].map(fmt.parseDateTime)) |@|
-        Column[Long]("Wins") |@|
-        Column[Long]("Losses") |@|
-        Column[Map[String, String]]("extra") |@|
-        Column[Seq[String]]("seq")
-    }.imap(GameScore.apply)(unlift(GameScore.unapply))
+    val * : TableMapper[GameScore] = {
+      PrimaryKey[String]("UserId") ::
+        RangeKey[String]("GameTitle") ::
+        Key[Long]("TopScore") ::
+        Key[DateTime]("TopScoreDateTime")(Encoder[String].contramap { d: DateTime => fmt.print(d) }, Decoder[String].map(fmt.parseDateTime)) ::
+        Key[Long]("Wins") ::
+        Key[Long]("Losses") ::
+        Key[Map[String, String]]("extra") ::
+        Key[Seq[String]]("seq") :: HNil
+    }.as[GameScore]
   }
 
 }

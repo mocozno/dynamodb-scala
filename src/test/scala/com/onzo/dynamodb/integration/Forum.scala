@@ -19,7 +19,7 @@ package com.onzo.dynamodb.integration
 
 import com.amazonaws.services.dynamodbv2.model._
 import com.github.dwhjames.awswrap.dynamodb._
-import com.onzo.dynamodb.{PrimaryKey, Column, Table}
+import com.onzo.dynamodb._
 
 
 case class Forum(
@@ -51,14 +51,19 @@ object Forum {
   }
 
   implicit object forumSerializer extends Table[Forum](Forum.tableName) {
-    import cats.syntax.monoidal._
 
-    override def * : Column[Forum] = {
-      Column[String]("Name", PrimaryKey) |@|
-      Column[String]("Category") |@|
-      Column[Long]("Threads") |@|
-      Column[Long]("Messages") |@|
-      Column[Long]("Views")
-    }.imap(Forum.apply)(unlift(Forum.unapply))
+    import shapeless._
+
+    def name = PrimaryKey[String]("Name")
+
+    def category = Key[String]("Category")
+
+    def threads = Key[Long]("Threads")
+
+    def messages = Key[Long]("Messages")
+
+    def views = Key[Long]("Views")
+
+    override val * = (name :: category :: threads :: messages :: views :: HNil).as[Forum]
   }
 }
