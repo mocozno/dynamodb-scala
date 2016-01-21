@@ -19,25 +19,23 @@ lazy val compilerOptions = Seq(
   "-Xfuture"
 )
 
-// Cats:
-lazy val catsVersion = "0.3.0"
-
 resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
-
-libraryDependencies ++= Seq(
-  "org.spire-math" %% "cats-core" % catsVersion
-)
 
 resolvers += Resolver.bintrayRepo("dwhjames", "maven")
 libraryDependencies += "com.github.dwhjames" %% "aws-wrap" % "0.8.0"
 libraryDependencies += "com.amazonaws" % "aws-java-sdk-dynamodb" % "1.10.34" //% "provided" COMMENTED for sbt run
 
+lazy val catsVersion = "0.3.0"
+
 libraryDependencies ++= Seq(
+  "org.spire-math" %% "cats-core" % catsVersion,
+  "com.chuusai" %% "shapeless" % "2.3.0-SNAPSHOT",
   "org.scalacheck" %% "scalacheck" % "1.12.5" % "test",
-  "org.scalatest" %% "scalatest" % "3.0.0-M9",
-  "org.spire-math" %% "cats-laws" % catsVersion,
-  "org.typelevel" %% "discipline" % "0.4",
-  "com.chuusai" %% "shapeless" % "2.3.0-SNAPSHOT"
+  "org.scalatest" %% "scalatest" % "3.0.0-M9" % "test",
+  "org.spire-math" %% "cats-laws" % catsVersion % "test",
+  "org.typelevel" %% "discipline" % "0.4" % "test",
+  "joda-time" % "joda-time" % "2.9" % "test",
+  "org.joda"  % "joda-convert" % "1.8" % "test"
 )
 // Bintray:
 

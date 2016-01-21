@@ -4,7 +4,7 @@
 
 ```scala
 resolvers += "dynamodb-scala" at "http://dl.bintray.com/onzo/maven"
-libraryDependencies += "com.onzo" %% "dynamodb-scala" % "0.1.0"
+libraryDependencies += "com.onzo" %% "dynamodb-scala" % "0.2.0"
 ```
 
 ##### Example
@@ -27,9 +27,4 @@ libraryDependencies += "com.onzo" %% "dynamodb-scala" % "0.1.0"
     override val * = (name :: category :: threads :: messages :: views :: HNil).as[Forum]
   }
 ```
-
-
-##### dependencies
-
-cats 0.4 (Monoidal)
 
