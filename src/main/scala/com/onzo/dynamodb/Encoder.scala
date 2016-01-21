@@ -6,7 +6,7 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import scala.collection.generic.IsTraversableOnce
 
 trait Encoder[A] {
-  self =>
+  //self =>
   def apply(a: A): AttributeValue
 
   def contramap[B](f: B => A): Encoder[B] = Encoder.instance(b => apply(f(b)))
