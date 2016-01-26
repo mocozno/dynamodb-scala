@@ -8,8 +8,10 @@ trait CodecLaws[A] {
 
   def encode: Encoder[A]
 
+  val name = "name"
+
   def codecRoundTrip(a: A): IsEq[A] =
-    decode(encode(a)) <-> a
+    decode(name, encode(name, a)) <-> a
 }
 
 object CodecLaws {

@@ -9,6 +9,10 @@ trait Encoder[A] {
   //self =>
   def apply(a: A): AttributeValue
 
+  def apply(name: String, a: A): Map[String, AttributeValue] = {
+    Map(name -> apply(a))
+  }
+
   def contramap[B](f: B => A): Encoder[B] = Encoder.instance(b => apply(f(b)))
 }
 
@@ -46,8 +50,18 @@ object Encoder {
   implicit val encodeBigDecimal: Encoder[BigDecimal] = instance(a => new AttributeValue().withN(a.toString))
   implicit val encodeUUID: Encoder[UUID] = instance(uuid => new AttributeValue().withS(uuid.toString))
 
-  implicit def encodeOption[A](implicit e: Encoder[A]): Encoder[Option[A]] =
-    instance(_.fold(new AttributeValue())(e(_)))
+  implicit def encodeOption[A](implicit e: Encoder[A]): Encoder[Option[A]] = new Encoder[Option[A]] {
+    //self =>
+    override def apply(a: Option[A]): AttributeValue = e(a.get)
+
+    override def apply(name: String, a: Option[A]): Map[String, AttributeValue] = {
+      if(a.isDefined)
+        Map(name -> apply(a))
+      else
+        Map.empty[String,AttributeValue]
+    }
+  }
+
 
   implicit def encodeMapLike[M[K, +V] <: Map[K, V], V](implicit
                                                        e: Encoder[V]

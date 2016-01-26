@@ -9,9 +9,9 @@ trait KeyLike[A] {
 
   val decoder: Decoder[A]
 
-  def encode(t: A): Map[String, AttributeValue] = Map(name -> encoder(t))
+  def encode(t: A): Map[String, AttributeValue] = encoder.apply(name, t)
 
-  def decode(items: Map[String, AttributeValue]): A = decoder(items(name))
+  def decode(items: Map[String, AttributeValue]): A = decoder(name, items)
 }
 
 case class PrimaryKey[A](name: String)(implicit val encoder: Encoder[A], val decoder: Decoder[A])

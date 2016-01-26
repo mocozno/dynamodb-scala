@@ -24,7 +24,7 @@ package object dynamodb {
               , collectFirst2: CollectFirst.Aux[N, HlistHelper.findPrimaryKeyValue.type, Primary]
               , foldLeftEncode: LeftFolder.Aux[N, Map[String, AttributeValue], HlistHelper.EncodeHlist.type, Map[String, AttributeValue]]
               , zipperMap: ZipConst.Aux[Map[String, AttributeValue], A, T]
-              , encodeMapper: Mapper.Aux[HlistHelper.DecodeHlist.type, T, M]
+              , decodeMapper: Mapper.Aux[HlistHelper.DecodeHlist.type, T, M]
              ): TableMapper[B] = {
 
       val _primaryKey: PrimaryKey[Primary] = a.collectFirst(HlistHelper.findPrimaryKey)(collectPrimaryKey)
@@ -64,7 +64,7 @@ package object dynamodb {
 
         override def decode(items: Map[String, AttributeValue]): B = {
           val zipped = a.zipConst(items)(zipperMap)
-          val hlist = zipped.map(HlistHelper.DecodeHlist)(encodeMapper)
+          val hlist = zipped.map(HlistHelper.DecodeHlist)(decodeMapper)
           entityGen.from(hlist)
         }
       }
