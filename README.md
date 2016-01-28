@@ -4,7 +4,10 @@
 
 ```scala
 resolvers += "dynamodb-scala" at "http://dl.bintray.com/onzo/maven"
-libraryDependencies += "com.onzo" %% "dynamodb-scala" % "0.2.0"
+libraryDependencies += "com.onzo" %% "dynamodb-scala" % "0.3.0"
+
+// for shapeless snapshot
+resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 ```
 
 ##### Example
