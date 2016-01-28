@@ -13,6 +13,15 @@ trait Decoder[A] {
   self =>
   def apply(c: AttributeValue): A
 
+  def apply(name: String, items: Map[String, AttributeValue]): A = {
+    val vOpt = items.get(name)
+    vOpt.fold(
+      throw new Exception(s"Attribute '$name' not found in '$items'")
+    )(
+      v => apply(v)
+    )
+  }
+
   def map[B](f: A => B): Decoder[B] = new Decoder[B] {
     def apply(c: AttributeValue): B = f(self(c))
   }
@@ -60,8 +69,11 @@ object Decoder {
     builder.result()
   }
 
-  implicit def decodeOption[A](implicit d: Decoder[A]): Decoder[Option[A]] = instance { c =>
-    Try(d(c)).toOption
+  implicit def decodeOption[A](implicit d: Decoder[A]): Decoder[Option[A]] = new Decoder[Option[A]] {
+    override def apply(c: AttributeValue): Option[A] = Try(d(c)).toOption
+    override def apply(name: String, items: Map[String, AttributeValue]): Option[A] = {
+      items.get(name).flatMap(apply)
+    }
   }
 
   /**

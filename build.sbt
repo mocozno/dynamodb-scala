@@ -1,6 +1,6 @@
 name := "dynamodb-scala"
 
-version := "0.1"
+version := "0.3.0"
 
 scalaVersion := "2.11.7"
 
@@ -23,7 +23,7 @@ resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositor
 
 resolvers += Resolver.bintrayRepo("dwhjames", "maven")
 libraryDependencies += "com.github.dwhjames" %% "aws-wrap" % "0.8.0"
-libraryDependencies += "com.amazonaws" % "aws-java-sdk-dynamodb" % "1.10.34" //% "provided" COMMENTED for sbt run
+libraryDependencies += "com.amazonaws" % "aws-java-sdk-dynamodb" % "1.10.34" % "provided"
 
 lazy val catsVersion = "0.3.0"
 
