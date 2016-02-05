@@ -27,24 +27,62 @@ object HlistHelper {
     implicit def caseMapStringAttributeValue2[A]: Case.Aux[R, (PrimaryKey[A], A), R] = at[R, (PrimaryKey[A], A)]((m, a) => m ++ a._1.encode(a._2))
 
     implicit def caseMapStringAttributeValue3[A]: Case.Aux[R, (RangeKey[A], A), R] = at[R, (RangeKey[A], A)]((m, a) => m ++ a._1.encode(a._2))
+
+    implicit def caseMapStringAttributeValue4[A]: Case.Aux[R, (MapKey[A], Map[String, A]), R] = at[R, (MapKey[A], Map[String, A])]((m, a) => m ++ a._1.encode(a._2))
   }
 
   object DecodeHlist extends Poly1 {
-    type R = Map[String, AttributeValue]
+    type map = Map[String, AttributeValue]
+    type Names = List[String]
+    type R = (map, Names)
 
     implicit def toCol1[A]: Case.Aux[(Key[A], R), A] = {
       at[(Key[A], R)] {
-        f => f._1.decode(f._2)
+        f => f._1.decode(f._2._1)
       }
     }
 
     implicit def toCol2[A]: Case.Aux[(PrimaryKey[A], R), A] = {
-      at[(PrimaryKey[A], R)] { f => f._1.decode(f._2)
+      at[(PrimaryKey[A], R)] { f => f._1.decode(f._2._1)
       }
     }
 
     implicit def toCol3[A]: Case.Aux[(RangeKey[A], R), A] = {
-      at[(RangeKey[A], R)] { f => f._1.decode(f._2)
+      at[(RangeKey[A], R)] { f => f._1.decode(f._2._1)
+      }
+    }
+
+    implicit def toCol4[A]: Case.Aux[(MapKey[A], R), Map[String, A]] = {
+      at[(MapKey[A], R)] { f =>
+        val filtered = f._2._1.filterKeys(!f._2._2.contains(_))
+        f._1.decode(filtered)
+      }
+    }
+  }
+
+  object findAllKeyName extends Poly2 {
+
+    implicit def toCol1[Repr <: HList, A]: Case.Aux[List[String], Key[A], List[String]] = {
+      at[List[String], Key[A]] {
+        (names, k) => k.name :: names
+      }
+    }
+
+    implicit def toCol2[Repr <: HList, A]: Case.Aux[List[String], PrimaryKey[A], List[String]] = {
+      at[List[String], PrimaryKey[A]] {
+        (names, k) => k.name :: names
+      }
+    }
+
+    implicit def toCol3[Repr <: HList, A]: Case.Aux[List[String], RangeKey[A], List[String]] = {
+      at[List[String], RangeKey[A]] {
+        (names, k) => k.name :: names
+      }
+    }
+
+    implicit def toCol4[Repr <: HList, A]: Case.Aux[List[String], MapKey[A], List[String]] = {
+      at[List[String], MapKey[A]] {
+        (names, k) => names
       }
     }
   }

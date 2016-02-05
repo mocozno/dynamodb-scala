@@ -116,7 +116,8 @@ object SampleData {
         wins = 21,
         losses = 72,
         extra = Map("key1" -> "value1"),
-        seq = Seq("1", "a")
+        seq = Seq("1", "a"),
+        mapKey = Map("key234" -> "valueString")
       ),
       GameScore(
         userId = "101",
