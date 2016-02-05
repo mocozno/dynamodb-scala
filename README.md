@@ -4,9 +4,9 @@
 
 ```scala
 resolvers += "dynamodb-scala" at "http://dl.bintray.com/onzo/maven"
-libraryDependencies += "com.onzo" %% "dynamodb-scala" % "0.3.0"
+libraryDependencies += "com.onzo" %% "dynamodb-scala" % "0.4.0"
 
-// for shapeless snapshot
+// for shapeless snapshot 2.3.0
 resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 ```
 
@@ -30,4 +30,6 @@ resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositor
     override val * = (name :: category :: threads :: messages :: views :: HNil).as[Forum]
   }
 ```
+
+more examples in [test](src/test/scala/com/onzo/dynamodb/integration)
 
