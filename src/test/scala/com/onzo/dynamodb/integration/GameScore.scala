@@ -33,7 +33,8 @@ case class GameScore(
                       losses: Long,
                       extra: Map[String, String] = Map.empty,
                       seq: Seq[String] = Seq.empty,
-                      optThing: Option[Boolean] = None
+                      optThing: Option[Boolean] = None,
+                      mapKey : Map[String, String] = Map.empty
                     )
 
 object GameScore {
@@ -92,7 +93,8 @@ object GameScore {
         Key[Long]("Losses") ::
         Key[Map[String, String]]("extra") ::
         Key[Seq[String]]("seq") ::
-        Key[Option[Boolean]]("optThing") :: HNil
+        Key[Option[Boolean]]("optThing") ::
+        MapKey[String] :: HNil
     }.as[GameScore]
   }
 

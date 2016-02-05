@@ -57,6 +57,16 @@ class QueryGlobalSecondaryIndexSpec
     result.getTableNames().asScala should contain (GameScore.tableName)
   }
 
+  it should "load" in {
+    import org.scalatest.OptionValues._
+
+    val r = await {
+      mapper.queryOnce[GameScore](sampleGameScores.head.userId)
+    }
+    r.head should be (sampleGameScores.head)
+    r should be (sampleGameScores.filter(_.userId == sampleGameScores.head.userId))
+  }
+
   it should s"contain ${sampleGameScores.size} game score items" in {
     await {
       mapper.countScan[GameScore]()

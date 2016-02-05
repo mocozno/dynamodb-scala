@@ -16,6 +16,7 @@ package object dynamodb {
   Primary
   ](a: A) {
 
+    // todo remove?
     val optionalRangeKey = RangeKey[Int]("rangeKeyCheat")
 
     def as[B](implicit entityGen: Generic.Aux[B, M]
@@ -23,14 +24,17 @@ package object dynamodb {
               , collectPrimaryKey: CollectFirst.Aux[A, HlistHelper.findPrimaryKey.type, PrimaryKey[Primary]]
               , collectFirst2: CollectFirst.Aux[N, HlistHelper.findPrimaryKeyValue.type, Primary]
               , foldLeftEncode: LeftFolder.Aux[N, Map[String, AttributeValue], HlistHelper.EncodeHlist.type, Map[String, AttributeValue]]
-              , zipperMap: ZipConst.Aux[Map[String, AttributeValue], A, T]
+              , zipperMap: ZipConst.Aux[HlistHelper.DecodeHlist.R, A, T]
               , decodeMapper: Mapper.Aux[HlistHelper.DecodeHlist.type, T, M]
+              , findAllKeyName: LeftFolder.Aux[A, List[String], HlistHelper.findAllKeyName.type, List[String]]
              ): TableMapper[B] = {
 
       val _primaryKey: PrimaryKey[Primary] = a.collectFirst(HlistHelper.findPrimaryKey)(collectPrimaryKey)
       val _rangeKey = a.runtimeList.collectFirst({
         case r: RangeKey[_] => r
       })
+
+      val names = a.foldLeft(List.empty[String])(HlistHelper.findAllKeyName)(findAllKeyName)
 
       new TableMapper[B] {
         override val primaryKey: Option[(String, Encoder[B])] = {
@@ -63,7 +67,7 @@ package object dynamodb {
         }
 
         override def decode(items: Map[String, AttributeValue]): B = {
-          val zipped = a.zipConst(items)(zipperMap)
+          val zipped = a.zipConst((items, names))(zipperMap)
           val hlist = zipped.map(HlistHelper.DecodeHlist)(decodeMapper)
           entityGen.from(hlist)
         }
