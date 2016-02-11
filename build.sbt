@@ -1,6 +1,6 @@
 name := "dynamodb-scala"
 
-version := "0.4.0"
+version := "0.4.1"
 
 scalaVersion := "2.11.7"
 
@@ -25,15 +25,13 @@ resolvers += Resolver.bintrayRepo("dwhjames", "maven")
 libraryDependencies += "com.github.dwhjames" %% "aws-wrap" % "0.8.0"
 libraryDependencies += "com.amazonaws" % "aws-java-sdk-dynamodb" % "1.10.34" % "provided"
 
-lazy val catsVersion = "0.3.0"
+lazy val catsVersion = "0.4.1"
 
 libraryDependencies ++= Seq(
-  "org.spire-math" %% "cats-core" % catsVersion,
+  "org.typelevel" %% "cats" % catsVersion,
   "com.chuusai" %% "shapeless" % "2.3.0-SNAPSHOT",
   "org.scalacheck" %% "scalacheck" % "1.12.5" % "test",
   "org.scalatest" %% "scalatest" % "3.0.0-M9" % "test",
-  "org.spire-math" %% "cats-laws" % catsVersion % "test",
-  "org.typelevel" %% "discipline" % "0.4" % "test",
   "joda-time" % "joda-time" % "2.9" % "test",
   "org.joda"  % "joda-convert" % "1.8" % "test"
 )
