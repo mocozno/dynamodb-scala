@@ -1,6 +1,6 @@
 name := "dynamodb-scala"
 
-version := "0.4.1"
+version := "0.4.2"
 
 scalaVersion := "2.11.7"
 
@@ -29,7 +29,7 @@ lazy val catsVersion = "0.4.1"
 
 libraryDependencies ++= Seq(
   "org.typelevel" %% "cats" % catsVersion,
-  "com.chuusai" %% "shapeless" % "2.3.0-SNAPSHOT",
+  "com.chuusai" %% "shapeless" % "2.3.0",
   "org.scalacheck" %% "scalacheck" % "1.12.5" % "test",
   "org.scalatest" %% "scalatest" % "3.0.0-M9" % "test",
   "joda-time" % "joda-time" % "2.9" % "test",
