@@ -6,6 +6,7 @@
 resolvers += "dynamodb-scala" at "http://dl.bintray.com/onzo/maven"
 libraryDependencies += "com.onzo" %% "dynamodb-scala" % "0.4.0"
 
+// This burdens the users of this library  with a shapeless dependency (and specific version)
 // for shapeless snapshot 2.3.0
 resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 ```
