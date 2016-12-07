@@ -16,6 +16,9 @@ package object dynamodb {
   Primary
   ](a: A) {
 
+    /*
+      It's not used. Should be removed
+     */
     // todo remove?
     val optionalRangeKey = RangeKey[Int]("rangeKeyCheat")
 
@@ -55,6 +58,7 @@ package object dynamodb {
 
                 // at this point we know there is a RangeKey and we know that entityGen exist
                 zipped.runtimeList.collectFirst({
+                  // This pattern matching will not work as expected because of type erasure
                   case (r: RangeKey[A], a: A) => r.encoder.apply(a)
                 }).get
             }

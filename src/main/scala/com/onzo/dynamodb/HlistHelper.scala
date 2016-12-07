@@ -3,6 +3,11 @@ package com.onzo.dynamodb
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import shapeless._
 
+/*
+I've not much experience with Shapeless. But this code is very hard to read because of the ._1 and ._2.
+Should be refactored to use pair pattern matching.
+ */
+
 object HlistHelper {
 
   object findPrimaryKey extends Poly1 {
