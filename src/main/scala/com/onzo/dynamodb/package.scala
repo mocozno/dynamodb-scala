@@ -8,15 +8,17 @@ import shapeless.ops.hlist._
 
 package object dynamodb {
 
+  // These HList types could be more helpfully named
   implicit class KeysHList[
-  A <: HList : <<:[KeyLike[_]]#λ,
-  M <: HList,
-  N <: HList,
-  T <: HList,
-  Primary
+    A <: HList : <<:[KeyLike[_]]#λ,
+    M <: HList,
+    N <: HList,
+    T <: HList,
+    Primary
   ](a: A) {
 
     // todo remove?
+    // I don't know what this is meant to do but based purely on the line of code I would remove it
     val optionalRangeKey = RangeKey[Int]("rangeKeyCheat")
 
     def as[B](implicit entityGen: Generic.Aux[B, M]
@@ -30,6 +32,8 @@ package object dynamodb {
              ): TableMapper[B] = {
 
       val _primaryKey: PrimaryKey[Primary] = a.collectFirst(HlistHelper.findPrimaryKey)(collectPrimaryKey)
+      // Again why runtimeList? Would using the fact a is an HList
+      // allow us to eliminate this option, because all types are known at compile time?
       val _rangeKey = a.runtimeList.collectFirst({
         case r: RangeKey[_] => r
       })
@@ -38,6 +42,7 @@ package object dynamodb {
 
       new TableMapper[B] {
         override val primaryKey: Option[(String, Encoder[B])] = {
+          // This Some should be unnecessary I think (See TableMapper.scala comment too)
           Some(_primaryKey.name -> Encoder.instance {
             b: B =>
               val zipped = a.zip(entityGen.to(b))(zipper)
@@ -47,6 +52,7 @@ package object dynamodb {
           })
         }
 
+        // I think this option is redundant due to my comment about runTimeList above
         override def rangeKey: Option[(String, Encoder[B])] = {
           _rangeKey.map { key =>
             key.name -> Encoder.instance {
@@ -54,6 +60,9 @@ package object dynamodb {
                 val zipped = a.zip(entityGen.to(b))(zipper)
 
                 // at this point we know there is a RangeKey and we know that entityGen exist
+                // Why are we using runtimeList here? Could we findFirst in the HList (like is done elsewhere) and prevent
+                // the compiler warning about erasure on a: A?
+                // This would also enable us to get rid of the .get as I noted above
                 zipped.runtimeList.collectFirst({
                   case (r: RangeKey[A], a: A) => r.encoder.apply(a)
                 }).get
