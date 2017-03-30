@@ -1,12 +1,13 @@
 package com.onzo.dynamodb
 
 import java.util.UUID
-import cats.functor.Contravariant
-import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import scala.collection.generic.IsTraversableOnce
 
+import cats.functor.Contravariant
+import com.amazonaws.services.dynamodbv2.model.AttributeValue
+
 trait Encoder[A] {
-  //self =>
+
   def apply(a: A): AttributeValue
 
   def apply(name: String, a: A): Map[String, AttributeValue] = {
@@ -23,6 +24,8 @@ object Encoder {
     def apply(a: A): AttributeValue = f(a)
   }
 
+  // I would avoid Traversable Once as much as possible and enforce a List or Seq, or whatever works best.
+  // Not something generic.
   implicit def encodeTraversableOnce[A0, C[_]](implicit
                                                e: Encoder[A0],
                                                is: IsTraversableOnce[C[A0]] {type A = A0}
@@ -51,7 +54,16 @@ object Encoder {
   implicit val encodeUUID: Encoder[UUID] = instance(uuid => new AttributeValue().withS(uuid.toString))
 
   implicit def encodeOption[A](implicit e: Encoder[A]): Encoder[Option[A]] = new Encoder[Option[A]] {
-    //self =>
+
+    /* The option.get is presumably unsafe?
+
+
+      A solution may be to introduce a new layer of your own types wrapping AttributeValue
+      This would essentially be a JSON tree of types, with a specific DynamoNull which you can turn `None` into
+      These values would then be elided from insertion in dynamo since I believe you can't explicitly insert null
+      into dynamodb
+
+    */
     override def apply(a: Option[A]): AttributeValue = e(a.get)
 
     override def apply(name: String, a: Option[A]): Map[String, AttributeValue] = {
@@ -74,6 +86,8 @@ object Encoder {
     new AttributeValue().withM(map)
   }
 
+  // You can't decode Either's, so I would avoid encoding them
+  // Wrapping the encoder/decoder pair in something like slick's MappedColumnType would prevent this problem
   def encodeEither[A, B](leftKey: String, rightKey: String)(implicit
                                                             ea: Encoder[A],
                                                             eb: Encoder[B]

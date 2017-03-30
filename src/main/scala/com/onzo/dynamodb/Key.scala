@@ -20,6 +20,9 @@ trait NamedKeyLike[A] extends KeyLike[A] {
   def decode(items: Map[String, AttributeValue]): A = decoder(name, items)
 }
 
+// I don't like having implicit parameters on case classes
+// I would instead make the constructor private (via 'sealed abstract' modifier) and have a
+// constructor in the companion object which enforces the implicit restraint
 case class PrimaryKey[A](name: String)(implicit val encoder: Encoder[A], val decoder: Decoder[A])
   extends NamedKeyLike[A]
 
@@ -36,10 +39,11 @@ case class Key[A](name: String)(implicit val encoder: Encoder[A], val decoder: D
   * @param decoder
   * @tparam A
   */
-case class MapKey[A](implicit val encoder: Encoder[A], val decoder: Decoder[A])
-  extends KeyLike[Map[String, A]] {
+case class MapKey[A](implicit val encoder: Encoder[A], val decoder: Decoder[A]) extends KeyLike[Map[String, A]] {
+
   def encode(t: Map[String, A]): Map[String, AttributeValue] = {
     val mapB = Map.newBuilder[String, AttributeValue]
+    // Just a tiny thing, you could map this rather than building a map explicitly
     t.foreach {
       case (key, v) => mapB ++= encoder(key, v)
     }
@@ -48,6 +52,7 @@ case class MapKey[A](implicit val encoder: Encoder[A], val decoder: Decoder[A])
 
   def decode(items: Map[String, AttributeValue]): Map[String, A] = {
     val mapB = Map.newBuilder[String, A]
+    // Since you have a monad for Deocoder you could traverse items rather than build a map from scratch
     items.foreach {
       case (key, v) => mapB += key -> decoder(key, items)
     }

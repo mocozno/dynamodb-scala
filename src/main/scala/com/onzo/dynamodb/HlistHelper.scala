@@ -7,15 +7,13 @@ object HlistHelper {
 
   object findPrimaryKey extends Poly1 {
     implicit def toCol2[A]: Case.Aux[PrimaryKey[A], PrimaryKey[A]] = {
-      at[PrimaryKey[A]] { f => f
-      }
+      at[PrimaryKey[A]](identity)
     }
   }
 
   object findPrimaryKeyValue extends Poly1 {
     implicit def toCol2[A]: Case.Aux[(PrimaryKey[A], A), A] = {
-      at[(PrimaryKey[A], A)] { f => f._2
-      }
+      at[(PrimaryKey[A], A)](_._2)
     }
   }
 
@@ -34,8 +32,11 @@ object HlistHelper {
   object DecodeHlist extends Poly1 {
     type map = Map[String, AttributeValue]
     type Names = List[String]
+    // Confusing name, R
     type R = (map, Names)
 
+    // Badly named functions. The signature, while all you need, is still pretty unfriendly so I think
+    // a better name like 'decodeFromKey' would be good
     implicit def toCol1[A]: Case.Aux[(Key[A], R), A] = {
       at[(Key[A], R)] {
         f => f._1.decode(f._2._1)
@@ -43,7 +44,7 @@ object HlistHelper {
     }
 
     implicit def toCol2[A]: Case.Aux[(PrimaryKey[A], R), A] = {
-      at[(PrimaryKey[A], R)] { f => f._1.decode(f._2._1)
+      at[(PrimaryKey[A], R)] { f => f._1.decode(f._2._1) // This tuple notation obsures what is going on, case classes might be better
       }
     }
 
@@ -60,6 +61,8 @@ object HlistHelper {
     }
   }
 
+  // This is not finding all key names, from the signatures it appears to be one step of an aggregation
+  // Maybe rename this 'aggregateKeyName'
   object findAllKeyName extends Poly2 {
 
     implicit def toCol1[Repr <: HList, A]: Case.Aux[List[String], Key[A], List[String]] = {

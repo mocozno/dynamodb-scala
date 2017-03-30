@@ -53,6 +53,8 @@ object Decoder {
   implicit val encodeBigDecimal: Decoder[BigDecimal] = instance(a => BigDecimal(a.getN, MathContext.UNLIMITED))
   implicit val encodeUUID: Decoder[UUID] = instance(a => UUID.fromString(a.getS))
 
+  // I would try to avoid CBF as much as humanly possible and would force the interface to use
+  // a List or Seq or whatever works best for this case, and not allow something generic.
   implicit def decodeCanBuildFrom[A, C[_]](implicit
                                            d: Decoder[A],
                                            cbf: CanBuildFrom[Nothing, A, C[A]]
@@ -94,6 +96,10 @@ object Decoder {
     builder.result()
   }
 
+
+  // I don't think it makes sense for Decoder to be a monad. It's trying to do two things,
+  // be the thing which decodes and be the thing which holds the decoded value.
+  // A separate class DecodeResult should be introduced if you want a monad
   implicit val monadDecode: Monad[Decoder] = new Monad[Decoder] {
     def pure[A](a: A): Decoder[A] = instance(_ => a)
 
