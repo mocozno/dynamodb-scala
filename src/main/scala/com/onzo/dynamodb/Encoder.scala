@@ -1,8 +1,10 @@
 package com.onzo.dynamodb
 
 import java.util.UUID
+
 import cats.functor.Contravariant
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
+
 import scala.collection.generic.IsTraversableOnce
 
 trait Encoder[A] {
@@ -55,13 +57,12 @@ object Encoder {
     override def apply(a: Option[A]): AttributeValue = e(a.get)
 
     override def apply(name: String, a: Option[A]): Map[String, AttributeValue] = {
-      if(a.isDefined)
+      if (a.isDefined)
         Map(name -> apply(a))
       else
-        Map.empty[String,AttributeValue]
+        Map.empty[String, AttributeValue]
     }
   }
-
 
   implicit def encodeMapLike[M[K, +V] <: Map[K, V], V](implicit
                                                        e: Encoder[V]

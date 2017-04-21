@@ -33,11 +33,11 @@ libraryDependencies ++= Seq(
   "org.scalacheck" %% "scalacheck" % "1.12.5" % "test",
   "org.scalatest" %% "scalatest" % "3.0.0-M9" % "test",
   "joda-time" % "joda-time" % "2.9" % "test",
-  "org.joda"  % "joda-convert" % "1.8" % "test"
+  "org.joda" % "joda-convert" % "1.8" % "test"
 )
 // Bintray:
 
-licenses +=("Apache-2.0", url("http://apache.org/licenses/LICENSE-2.0"))
+licenses += ("Apache-2.0", url("http://apache.org/licenses/LICENSE-2.0"))
 
 bintrayPackageLabels in bintray := Seq("scala", "dynamo", "dynamodb", "amazon", "utility")
 

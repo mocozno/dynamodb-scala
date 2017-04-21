@@ -24,12 +24,11 @@ import scala.collection.JavaConverters._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
-
 class ReadsOnHashKeyTableSpec
   extends FlatSpec
-     with Matchers
-     with DynamoDBClient
-{
+    with Matchers
+    with DynamoDBClient {
+
   import SampleData.sampleForums
 
   override val tableNames = Seq(Forum.tableName)
@@ -52,26 +51,26 @@ class ReadsOnHashKeyTableSpec
       client.listTables()
     }
 
-    result.getTableNames().asScala should contain (Forum.tableName)
+    result.getTableNames().asScala should contain(Forum.tableName)
   }
 
   it should "contain the first sample Forum" in {
     import org.scalatest.OptionValues._
     await {
       mapper.loadByKey[Forum](sampleForums.head.name)
-    } .value should be (sampleForums.head)
+    }.value should be(sampleForums.head)
 
     val result = await {
       mapper.batchLoadByKeys[Forum](Seq(sampleForums.head.name))
     }
     result should have size (1)
-    result.head should be (sampleForums.head)
+    result.head should be(sampleForums.head)
   }
 
   it should s"contain ${sampleForums.size} forum items" in {
     await {
       mapper.countScan[Forum]()
-    } should equal (sampleForums.size)
+    } should equal(sampleForums.size)
   }
 
   it should s"contain the sample forum items" in {
@@ -88,15 +87,15 @@ class ReadsOnHashKeyTableSpec
       mapper.batchLoadByKeys[Forum](sampleForums map (_.name))
     }
 
-    forumScan          should have size (sampleForums.size.toLong)
-    forumScanOnce      should have size (sampleForums.size.toLong)
+    forumScan should have size (sampleForums.size.toLong)
+    forumScanOnce should have size (sampleForums.size.toLong)
     forumScanOnceLimit should have size (sampleForums.size.toLong)
-    forumBatch         should have size (sampleForums.size.toLong)
+    forumBatch should have size (sampleForums.size.toLong)
 
     for (forum <- sampleForums) {
-      forumScan     should contain (forum)
-      forumScanOnce should contain (forum)
-      forumBatch    should contain (forum)
+      forumScan should contain(forum)
+      forumScanOnce should contain(forum)
+      forumBatch should contain(forum)
     }
   }
 }

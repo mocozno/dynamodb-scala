@@ -21,15 +21,13 @@ import com.amazonaws.services.dynamodbv2.model._
 import com.github.dwhjames.awswrap.dynamodb._
 import com.onzo.dynamodb._
 
-
 case class Forum(
-  name:     String,
-  category: String,
-  threads:  Long,
-  messages: Long,
-  views:    Long
-)
-
+                  name: String,
+                  category: String,
+                  threads: Long,
+                  messages: Long,
+                  views: Long
+                )
 
 object Forum {
 
@@ -37,17 +35,17 @@ object Forum {
 
   val tableRequest =
     new CreateTableRequest()
-    .withTableName(Forum.tableName)
-    .withProvisionedThroughput(Schema.provisionedThroughput(10L, 5L))
-    .withAttributeDefinitions(Schema.stringAttribute(Attributes.name))
-    .withKeySchema(Schema.hashKey(Attributes.name))
+      .withTableName(Forum.tableName)
+      .withProvisionedThroughput(Schema.provisionedThroughput(10L, 5L))
+      .withAttributeDefinitions(Schema.stringAttribute(Attributes.name))
+      .withKeySchema(Schema.hashKey(Attributes.name))
 
   object Attributes {
-    val name     = "Name"
+    val name = "Name"
     val category = "Category"
-    val threads  = "Threads"
+    val threads = "Threads"
     val messages = "Messages"
-    val views    = "Views"
+    val views = "Views"
   }
 
   implicit object forumSerializer extends Table[Forum](Forum.tableName) {

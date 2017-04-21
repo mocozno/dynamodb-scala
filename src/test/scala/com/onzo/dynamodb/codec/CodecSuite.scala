@@ -22,7 +22,7 @@ trait EqInstances {
 }
 
 trait DynamoDBSuite extends FunSuite with Matchers with Discipline with AllInstances with AllSyntax
-with ArbitraryInstances with EqInstances {
+  with ArbitraryInstances with EqInstances {
   override def convertToEqualizer[T](left: T): Equalizer[T] = ???
 }
 
@@ -43,7 +43,7 @@ class StdLibCodecSuite extends DynamoDBSuite {
   checkAll("Codec[BigInt]", CodecTests[BigInt].codec)
 
   // reduce the scope of BigDecimal (some generated BigDecimal can't be parsed from a string again)
-  implicit val bigDecimalArb : Arbitrary[BigDecimal] = Arbitrary(
+  implicit val bigDecimalArb: Arbitrary[BigDecimal] = Arbitrary(
     Arbitrary.arbBigDecimal.arbitrary.filter(d => Try(BigDecimal(d.toString(), MathContext.UNLIMITED)).isSuccess))
 
   checkAll("Codec[BigDecimal]", CodecTests[BigDecimal].codec)

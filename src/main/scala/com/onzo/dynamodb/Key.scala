@@ -32,6 +32,7 @@ case class Key[A](name: String)(implicit val encoder: Encoder[A], val decoder: D
 /**
   * This key return the rest of the dynamodb columns not mapped by other the keys
   * This key write it's Map[String, A] as column in dynamodb
+  *
   * @param encoder
   * @param decoder
   * @tparam A

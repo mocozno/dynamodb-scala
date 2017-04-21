@@ -23,7 +23,6 @@ import com.onzo.dynamodb._
 import org.joda.time.DateTime
 import org.joda.time.format.ISODateTimeFormat
 
-
 case class ForumThread(
                         forumName: String,
                         subject: String,

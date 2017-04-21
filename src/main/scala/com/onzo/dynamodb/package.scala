@@ -5,7 +5,6 @@ import shapeless.LUBConstraint._
 import shapeless._
 import shapeless.ops.hlist._
 
-
 package object dynamodb {
 
   implicit class KeysHList[

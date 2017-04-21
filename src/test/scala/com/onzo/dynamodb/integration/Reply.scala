@@ -24,7 +24,6 @@ import org.joda.time.DateTime
 import org.joda.time.format.ISODateTimeFormat
 import shapeless.HNil
 
-
 case class Reply(
                   id: String,
                   replyDateTime: DateTime,

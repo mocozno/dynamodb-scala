@@ -17,21 +17,17 @@
 package com.onzo.dynamodb.integration
 
 import com.github.dwhjames.awswrap.dynamodb._
+import org.scalatest.{FlatSpec, Matchers}
 
 import scala.collection.JavaConverters._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
-import org.scalatest.{ FlatSpec, BeforeAndAfterAll, Matchers }
-
-import com.amazonaws.AmazonClientException
-
-
 class QueryGlobalSecondaryIndexSpec
   extends FlatSpec
-     with Matchers
-     with DynamoDBClient
-{
+    with Matchers
+    with DynamoDBClient {
+
   import SampleData.sampleGameScores
 
   override val tableNames = Seq(GameScore.tableName)
@@ -54,39 +50,38 @@ class QueryGlobalSecondaryIndexSpec
       client.listTables()
     }
 
-    result.getTableNames().asScala should contain (GameScore.tableName)
+    result.getTableNames().asScala should contain(GameScore.tableName)
   }
 
   it should "load" in {
-    import org.scalatest.OptionValues._
 
     val r = await {
       mapper.queryOnce[GameScore](sampleGameScores.head.userId)
     }
-    r.head should be (sampleGameScores.head)
-    r should be (sampleGameScores.filter(_.userId == sampleGameScores.head.userId))
+    r.head should be(sampleGameScores.head)
+    r should be(sampleGameScores.filter(_.userId == sampleGameScores.head.userId))
   }
 
   it should s"contain ${sampleGameScores.size} game score items" in {
     await {
       mapper.countScan[GameScore]()
-    } should equal (sampleGameScores.size)
+    } should equal(sampleGameScores.size)
   }
 
   it should s"return top ten high scores using global secondary index" in {
     val result = await {
       mapper.query[GameScore](
-                  GameScore.globalSecondaryIndexName,
-                  GameScore.Attributes.gameTitle,
-                  "Galaxy Invaders",
-                  Some(GameScore.Attributes.topScore -> QueryCondition.greaterThan(0)),
-                  false,
-                  10 // top ten high scores
-                )
+        GameScore.globalSecondaryIndexName,
+        GameScore.Attributes.gameTitle,
+        "Galaxy Invaders",
+        Some(GameScore.Attributes.topScore -> QueryCondition.greaterThan(0)),
+        false,
+        10 // top ten high scores
+      )
     }
     result should have size (2)
-    result(0).userId should equal ("101")
-    result(1).userId should equal ("103")
+    result(0).userId should equal("101")
+    result(1).userId should equal("103")
 
     val result2 = await {
       mapper.queryOnce[GameScore](
@@ -99,7 +94,7 @@ class QueryGlobalSecondaryIndexSpec
       )
     }
     result2 should have size (2)
-    result2(0).userId should equal ("101")
-    result2(1).userId should equal ("103")
+    result2(0).userId should equal("101")
+    result2(1).userId should equal("103")
   }
 }

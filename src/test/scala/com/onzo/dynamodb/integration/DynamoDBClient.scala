@@ -17,8 +17,6 @@
 
 package com.onzo.dynamodb.integration
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.services.dynamodbv2._
 import com.amazonaws.services.dynamodbv2.model._
@@ -26,15 +24,14 @@ import com.github.dwhjames.awswrap.dynamodb.AmazonDynamoDBScalaClient
 import org.scalatest.{BeforeAndAfterAll, Suite}
 import org.slf4j.{Logger, LoggerFactory}
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.sys.process.Process
-;
-
 
 trait DynamoDBClient
   extends BeforeAndAfterAll
-     with AwaitHelper
-{ self: Suite =>
+    with AwaitHelper {
+  self: Suite =>
 
   private val logger: Logger = LoggerFactory.getLogger(self.getClass)
 
@@ -108,22 +105,22 @@ trait DynamoDBClient
   }
 
   def awaitTableCreation(tableName: String): TableDescription = {
-      logger.info(s"Waiting for $tableName table to become active.")
+    logger.info(s"Waiting for $tableName table to become active.")
 
-      val deadline = 10.minutes.fromNow
+    val deadline = 10.minutes.fromNow
 
-      while (deadline.hasTimeLeft) {
-        val result = await {
-          client.describeTable(tableName)
-        }
-
-        val description = result.getTable
-        if (description.getTableStatus == TableStatus.ACTIVE.toString)
-          return description
-
-        Thread.sleep(20 * 1000)
+    while (deadline.hasTimeLeft) {
+      val result = await {
+        client.describeTable(tableName)
       }
-      throw new RuntimeException(s"Timed out waiting for $tableName table to become active.")
+
+      val description = result.getTable
+      if (description.getTableStatus == TableStatus.ACTIVE.toString)
+        return description
+
+      Thread.sleep(20 * 1000)
     }
+    throw new RuntimeException(s"Timed out waiting for $tableName table to become active.")
+  }
 
 }

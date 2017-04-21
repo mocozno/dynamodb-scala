@@ -3,7 +3,6 @@ package com.onzo.dynamodb
 import com.github.dwhjames.awswrap.dynamodb._
 import scala.collection.mutable
 
-
 abstract class Table[T](override val tableName: String) extends DynamoDBSerializer[T] {
 
   val * : TableMapper[T]
