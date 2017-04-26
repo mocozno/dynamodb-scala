@@ -29,9 +29,11 @@ case class RangeKey[A](name: String)(implicit val encoder: Encoder[A], val decod
 case class Key[A](name: String)(implicit val encoder: Encoder[A], val decoder: Decoder[A])
   extends NamedKeyLike[A]
 
+
 /**
-  * This key return the rest of the dynamodb columns not mapped by other the keys
-  * This key write it's Map[String, A] as column in dynamodb
+  * This key returns the rest of the dynamodb columns not mapped by other the keys
+  * This key writes its Map[String, A] as column in dynamodb
+  *
   * @param encoder
   * @param decoder
   * @tparam A
@@ -40,6 +42,7 @@ case class MapKey[A](implicit val encoder: Encoder[A], val decoder: Decoder[A])
   extends KeyLike[Map[String, A]] {
   def encode(t: Map[String, A]): Map[String, AttributeValue] = {
     val mapB = Map.newBuilder[String, AttributeValue]
+    t.map{case (key, v) => mapB ++= encoder(key, v)}
     t.foreach {
       case (key, v) => mapB ++= encoder(key, v)
     }

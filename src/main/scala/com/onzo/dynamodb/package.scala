@@ -5,9 +5,16 @@ import shapeless.LUBConstraint._
 import shapeless._
 import shapeless.ops.hlist._
 
-
 package object dynamodb {
 
+  /*
+  This is a very complicated type-level logic that most Scala programmers would struggle with.
+  When implicit resolution fails, users will have to go through this code to understand what is really missing or how to fix it at call site.
+  I would add some more test methods around this and comments, at least explaining each type argument and implicit arguments.
+
+  From a type safety percpective, keys are not marked with the type-level record name
+  so I expect the `as` method to only match against the sequence of types, not checking field names. I would investigate using LabelledGeneric instead.
+  */
   implicit class KeysHList[
   A <: HList : <<:[KeyLike[_]]#λ,
   M <: HList,
@@ -16,9 +23,8 @@ package object dynamodb {
   Primary
   ](a: A) {
 
-    // todo remove?
+    //TODO: remove?
     val optionalRangeKey = RangeKey[Int]("rangeKeyCheat")
-
     def as[B](implicit entityGen: Generic.Aux[B, M]
               , zipper: Zip.Aux[A :: M :: HNil, N]
               , collectPrimaryKey: CollectFirst.Aux[A, HlistHelper.findPrimaryKey.type, PrimaryKey[Primary]]

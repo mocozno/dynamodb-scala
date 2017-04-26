@@ -16,9 +16,8 @@
 
 package com.onzo.dynamodb.integration
 
-import com.github.dwhjames.awswrap.dynamodb._
-
 import com.amazonaws.services.dynamodbv2.model._
+import com.github.dwhjames.awswrap.dynamodb._
 import com.onzo.dynamodb._
 import org.joda.time.DateTime
 import org.joda.time.format.ISODateTimeFormat
@@ -34,7 +33,7 @@ case class GameScore(
                       extra: Map[String, String] = Map.empty,
                       seq: Seq[String] = Seq.empty,
                       optThing: Option[Boolean] = None,
-                      mapKey : Map[String, String] = Map.empty
+                      mapKey: Map[String, String] = Map.empty
                     )
 
 object GameScore {
