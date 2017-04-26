@@ -75,6 +75,7 @@ object Reply {
 
     override val * = {
       PrimaryKey[String]("Id") ::
+        //Date represented as string (instead of timestamp and sorted like this
         RangeKey[DateTime]("ReplyDateTime")(Encoder[String].contramap { d: DateTime => fmt.print(d) }, Decoder[String].map(fmt.parseDateTime)) ::
         Key[String]("Message") ::
         Key[String]("PostedBy") :: HNil

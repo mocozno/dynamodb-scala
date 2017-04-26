@@ -21,10 +21,7 @@ import org.joda.time.DateTime
 
 object SampleData {
 
-  val t0 = DateTime.now.minusDays(1)
-  val t1 = DateTime.now.minusDays(7)
-  val t2 = DateTime.now.minusDays(14)
-  val t3 = DateTime.now.minusDays(21)
+  val List(t0, t1, t2, t3) = List(1, 7, 14, 21).map(DateTime.now.minusDays)
 
   val sampleForums: Seq[Forum] = Seq(
     Forum(
@@ -42,7 +39,7 @@ object SampleData {
       views = 500
     )
   )
-
+  //Could use scalacheck to generate arbitrary combinations of these fields instead, if it is beneficial
   val sampleThreads: Seq[ForumThread] = Seq(
     ForumThread(
       forumName = "Amazon DynamoDB",
