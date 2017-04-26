@@ -25,17 +25,21 @@ trait DynamoDBSuite extends FunSuite with Matchers with Discipline with AllInsta
   with ArbitraryInstances with EqInstances {
   override def convertToEqualizer[T](left: T): Equalizer[T] = ???
 }
-
+//It is good to see most codecs tested
+//TODO: Note which Encoders/Decoders are not tested
 class AnyValCodecSuite extends DynamoDBSuite {
-  //checkAll("Codec[Unit]", CodecTests[Unit].codec)
+
   checkAll("Codec[Boolean]", CodecTests[Boolean].codec)
-  //checkAll("Codec[Char]", CodecTests[Char].codec)
   checkAll("Codec[Float]", CodecTests[Float].codec)
   checkAll("Codec[Double]", CodecTests[Double].codec)
   checkAll("Codec[Byte]", CodecTests[Byte].codec)
   checkAll("Codec[Short]", CodecTests[Short].codec)
   checkAll("Codec[Int]", CodecTests[Int].codec)
   checkAll("Codec[Long]", CodecTests[Long].codec)
+
+  //TODO: Find why these needed to be commented out
+  //checkAll("Codec[Char]", CodecTests[Char].codec)
+  //checkAll("Codec[Unit]", CodecTests[Unit].codec)
 }
 
 class StdLibCodecSuite extends DynamoDBSuite {
