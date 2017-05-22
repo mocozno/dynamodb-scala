@@ -8,6 +8,7 @@ abstract class Table[T](override val tableName: String) extends DynamoDBSerializ
 
   val * : TableMapper[T]
 
+  // get on option?
   override def hashAttributeName: String = *.primaryKey.get._1
 
   override def rangeAttributeName: Option[String] = *.rangeKey.map(_._1)

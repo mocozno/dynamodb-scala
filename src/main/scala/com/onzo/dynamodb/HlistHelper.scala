@@ -5,6 +5,7 @@ import shapeless._
 
 object HlistHelper {
 
+  // different styles of braces usage for at[] in this file
   object findPrimaryKey extends Poly1 {
     implicit def toCol2[A]: Case.Aux[PrimaryKey[A], PrimaryKey[A]] = {
       at[PrimaryKey[A]] { f => f
