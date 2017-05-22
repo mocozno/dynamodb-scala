@@ -8,6 +8,7 @@ import shapeless.ops.hlist._
 
 package object dynamodb {
 
+  // different styles with using commas in this file, once at the start once at the end
   implicit class KeysHList[
   A <: HList : <<:[KeyLike[_]]#λ,
   M <: HList,
@@ -16,6 +17,7 @@ package object dynamodb {
   Primary
   ](a: A) {
 
+    // remove either code or comment
     // todo remove?
     val optionalRangeKey = RangeKey[Int]("rangeKeyCheat")
 

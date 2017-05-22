@@ -22,11 +22,12 @@ lazy val compilerOptions = Seq(
 resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 
 resolvers += Resolver.bintrayRepo("dwhjames", "maven")
+// mess with dependencies, why are they separated?
 libraryDependencies += "com.github.dwhjames" %% "aws-wrap" % "0.8.0"
 libraryDependencies += "com.amazonaws" % "aws-java-sdk-dynamodb" % "1.10.34" % "provided"
 
 lazy val catsVersion = "0.4.1"
-
+//maybe separate integration tests from unit tests?
 libraryDependencies ++= Seq(
   "org.typelevel" %% "cats" % catsVersion,
   "com.chuusai" %% "shapeless" % "2.3.0",

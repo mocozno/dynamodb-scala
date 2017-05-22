@@ -6,6 +6,7 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import scala.collection.generic.IsTraversableOnce
 
 trait Encoder[A] {
+  // commented code
   //self =>
   def apply(a: A): AttributeValue
 

@@ -59,6 +59,7 @@ object Decoder {
                                           ): Decoder[C[A]] = instance { c =>
     import scala.collection.JavaConversions._
 
+    //for comprehension for one statement? I think I would use foreach in this case
     val list = c.getL
     val builder = cbf()
     for {
