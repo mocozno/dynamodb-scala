@@ -18,10 +18,16 @@ lazy val compilerOptions = Seq(
   "-Ywarn-numeric-widen",
   "-Xfuture"
 )
+//was missing
+scalacOptions ++= compilerOptions
+
+//integration tests should be moved to separate configuration.
+
 
 resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 
 resolvers += Resolver.bintrayRepo("dwhjames", "maven")
+//library dependencies should be managed in one place.
 libraryDependencies += "com.github.dwhjames" %% "aws-wrap" % "0.8.0"
 libraryDependencies += "com.amazonaws" % "aws-java-sdk-dynamodb" % "1.10.34" % "provided"
 

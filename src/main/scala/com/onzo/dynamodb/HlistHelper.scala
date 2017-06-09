@@ -7,8 +7,7 @@ object HlistHelper {
 
   object findPrimaryKey extends Poly1 {
     implicit def toCol2[A]: Case.Aux[PrimaryKey[A], PrimaryKey[A]] = {
-      at[PrimaryKey[A]] { f => f
-      }
+      at[PrimaryKey[A]] (identity)
     }
   }
 

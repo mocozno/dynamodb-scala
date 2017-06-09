@@ -16,8 +16,8 @@ package object dynamodb {
   Primary
   ](a: A) {
 
-    // todo remove?
-    val optionalRangeKey = RangeKey[Int]("rangeKeyCheat")
+    // todo remove? //should be removed if not needed
+    //val optionalRangeKey = RangeKey[Int]("rangeKeyCheat")
 
     def as[B](implicit entityGen: Generic.Aux[B, M]
               , zipper: Zip.Aux[A :: M :: HNil, N]

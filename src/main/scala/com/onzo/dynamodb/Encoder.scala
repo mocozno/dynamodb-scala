@@ -51,7 +51,7 @@ object Encoder {
   implicit val encodeUUID: Encoder[UUID] = instance(uuid => new AttributeValue().withS(uuid.toString))
 
   implicit def encodeOption[A](implicit e: Encoder[A]): Encoder[Option[A]] = new Encoder[Option[A]] {
-    //self =>
+    //self => //should be deleted if not needed
     override def apply(a: Option[A]): AttributeValue = e(a.get)
 
     override def apply(name: String, a: Option[A]): Map[String, AttributeValue] = {
