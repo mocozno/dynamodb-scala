@@ -13,6 +13,10 @@ trait Decoder[A] {
   self =>
   def apply(c: AttributeValue): A
 
+  /*
+    this method is not safe but caller has no clue without looking into code
+    Result could be wrapped to represent this effect.
+   */
   def apply(name: String, items: Map[String, AttributeValue]): A = {
     val vOpt = items.get(name)
     vOpt.fold(
